@@ -26,8 +26,6 @@ sexo.addEventListener("change", () => {
 
 //logica calculo
 calcula.addEventListener("click", () => {
-  const H = 22.5;
-  const M = 21.5;
   let Pi = 0.0;
   let Ap = 0;
   let Pa = 0;
@@ -42,20 +40,20 @@ calcula.addEventListener("click", () => {
   ) {
     //verificação de sexo - MASC
     if (sexo.value == "Masculino") {
-      Pi = H * Math.pow(altura.value, altura.value);
+      Pi = 22.5 * (altura.value * altura.value);
       Ap = (peso.value / Pi) * 100;
       if (95.0 > Ap || Ap > 115.0) {
         Pa = ((Pi - peso.value) * 0, 25) + Pa;
       }
       //FEM
     } else if (sexo.value == "Feminino") {
-      Pi = M * Math.pow(altura.value, altura.value);
+      Pi = 21.5 * Math.pow(altura.value, altura.value);
       Ap = (peso.value / Pi) * 100;
       if (95.0 > Ap || Ap > 115.0) {
         Pa = (Pi - peso.value) * 0.25 + Pa;
       }
     }
-    display.innerHTML = `${Pi} Kgs`;
+    display.innerHTML = `${Pi.toFixed(2)} Kgs`;
     display2.innerHTML = `${Ap.toFixed(2)} %`;
     display3.innerHTML = `${Pa} Kgs`;
   }
