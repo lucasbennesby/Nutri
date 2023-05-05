@@ -18,6 +18,9 @@ sexo.addEventListener("change", () => {
   if (sexo.value == "Feminino") {
     gestante.removeAttribute("disabled");
     gestanteCheck.removeAttribute("disabled");
+  } else if (sexo.value == "Masculino") {
+    gestante.setAttribute("disabled");
+    gestanteCheck.setAttribute("disabled");
   }
 });
 
