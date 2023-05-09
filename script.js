@@ -5,9 +5,10 @@ const gestanteCheck = document.querySelector(".gestanteCheck");
 const peso = document.querySelector("#peso");
 const altura = document.querySelector("#altura");
 const calcula = document.querySelector("#calcular");
-const display = document.querySelector("#display");
-const display2 = document.querySelector("#display2");
-const display3 = document.querySelector("#display3");
+const displayPesoIdeal = document.querySelector("#displayPesoIdeal");
+const displayAdequacaoPeso = document.querySelector("#displayAdequacaoPeso");
+const displayPesoAjustado = document.querySelector("#displayPesoAjustado");
+const displayIMC = document.querySelector("#displayIMC");
 
 const inputs = [peso, altura, idade];
 const alerts = ["peso", "altura", "idade"];
@@ -26,10 +27,6 @@ sexo.addEventListener("change", () => {
 
 //logica calculo
 calcula.addEventListener("click", () => {
-  let Pi = 0.0;
-  let Ap = 0;
-  let Pa = 0;
-
   if (verificaIdade() || verificaSexo() || verificaPeso() || verificaAltura()) {
     console.log("tenta dnv");
   } else if (
@@ -38,27 +35,45 @@ calcula.addEventListener("click", () => {
     !verificaPeso() &&
     !verificaAltura()
   ) {
+    let IMC = 0;
+    var adequacao = 0;
+    var PI = 0;
+    var PA = 0.0;
+
     //verificação de sexo - MASC
     if (sexo.value == "Masculino") {
-      Pi = 22.5 * (altura.value * altura.value);
-      Ap = (peso.value / Pi) * 100;
-      if (95.0 > Ap || Ap > 115.0) {
-        Pa = ((Pi - peso.value) * 0, 25) + Pa;
+      //calculo masculino
+      calculaIMC(altura.value, peso.value);
+      PI = calculaPesoIdealHomem(altura.value);
+      adequacao = calculaAdequacaoDePeso(peso.value, PI);
+      if (90 > adequacao || adequacao > 110) {
+        PA = calculaPesoAjustado(PI, peso.value);
       }
-      //FEM
     } else if (sexo.value == "Feminino") {
-      Pi = 21.5 * Math.pow(altura.value, altura.value);
-      Ap = (peso.value / Pi) * 100;
-      if (95.0 > Ap || Ap > 115.0) {
-        Pa = (Pi - peso.value) * 0.25 + Pa;
+      //calculo feminino
+
+      calculaIMC(altura.value, peso.value);
+      PI = calculaPesoIdealMulher(altura.value);
+      adequacao = calculaAdequacaoDePeso(peso.value, PI);
+      if (90 > adequacao || adequacao > 110) {
+        PA = calculaPesoAjustado(PI, peso.value);
       }
     }
-    display.innerHTML = `${Pi.toFixed(2)} Kgs`;
-    display2.innerHTML = `${Ap.toFixed(2)} %`;
-    display3.innerHTML = `${Pa} Kgs`;
   }
 
-  console.log(Pi);
+  displayIMC.innerHTML = `${IMC.toFixed(2)}Kgs/m²`;
+  displayPesoIdeal.innerHTML = `${PI.toFixed(2)}Kgs`;
+  displayAdequacaoPeso.innerHTML = `${adequacao.toFixed(2)}%`;
+  displayPesoAjustado.innerHTML = `${PA.toFixed(2)}Kgs`;
+  //display.innerHTML = `${PI.toFixed(2)} Kgs`;
+  //display2.innerHTML = `${Ap.toFixed(2)} %`;
+  // display3.innerHTML = `${Pa} Kgs`;
+  //displayIMC.innerHTML = `${IMC.toFixed(2)} Kg/M²`;
+
+  console.log(`peso ideal ${PI}`);
+  console.log(`esse eh o imc${IMC}`);
+  console.log(`adequacao eh ${adequacao}`);
+  console.log(`Peso ajustado eh ${PA}`);
 });
 
 //PI = IMCideal * ESTATURA²
@@ -101,3 +116,36 @@ function verificaAltura() {
     return false;
   }
 }
+
+function calculaIMC(altura, peso) {
+  IMC = peso / (altura * altura);
+
+  return IMC;
+}
+function calculaPesoIdealHomem(altura) {
+  PesoIdeal = altura * altura * 22.5;
+  return PesoIdeal;
+}
+function calculaPesoIdealMulher(altura) {
+  PesoIdeal = altura * altura * 21.5;
+  return PesoIdeal;
+}
+
+function calculaAdequacaoDePeso(peso, pesoIdeal) {
+  adequacaoDePeso = (peso / pesoIdeal) * 100;
+
+  return adequacaoDePeso;
+}
+
+function calculaPesoAjustado(pesoIdeal, pesoAtual) {
+  pesoAjustado = pesoIdeal - pesoAtual;
+  pesoAjustado *= 0.25;
+  pesoAjustado = parseFloat(pesoAtual) + parseFloat(pesoAjustado);
+
+  return pesoAjustado;
+}
+//imc = peso/ altura²
+//peso ideal = altura² * 21,5 --> mulher
+//peso ideal = altura² * 22,5 --> homem
+//adequação de peso = (PesoAtual/PesoIdeal) * 100
+//pesoAjustado = ((PesoIdeal - PesoAtual) * 0,25) + pesoAtual
